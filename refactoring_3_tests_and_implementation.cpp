@@ -29,11 +29,8 @@ enum class HttpCode {
 class HttpResponse {
 public:
     explicit HttpResponse(HttpCode code);
-
     HttpResponse& SetContent(std::string value);
-
     friend std::ostream& operator << (std::ostream& os, const HttpResponse& resp);
-
 private:
     HttpCode code_;
     std::string content_;
@@ -49,21 +46,16 @@ HttpResponse& HttpResponse::SetContent(std::string value) {
 
 std::ostream& operator << (std::ostream& os, const HttpResponse& resp) {
     const std::string_view crlf("\r\n");
-
     os << "HTTP/1.1 " << static_cast<int>(resp.code_) << ' ';
     switch (resp.code_) {
-        case HttpCode::OK:
-            os << "OK"; break;
-        case HttpCode::NotFound:
-            os << "Not found"; break;
+        case HttpCode::OK:           os << "OK";           break;
+        case HttpCode::NotFound: os << "Not found"; break;
     }
     os << crlf;
-
     if (!resp.content_.empty()) {
         os << "Content-Length: " << resp.content_.size() << crlf;
     }
-    os << crlf << resp.content_;
-    return os;
+    return os << crlf << resp.content_;
 }
 
 void TestConstruction() {
